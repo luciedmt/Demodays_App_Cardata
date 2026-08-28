@@ -202,9 +202,17 @@
     <div class="keyboard" id="keyboard"></div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <script>
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    
+    const SUPABASE_URL = "https://kavyxpwfwxwxvjawqmwi.supabase.co";
+    const SUPABASE_KEY = "sb_publishable__7N-coS7EthfgyziZWoB-A_3tkDDBf4";
+    const supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
     function playClickSound() {
       try {
         const now = audioContext.currentTime;
@@ -633,7 +641,7 @@
       return buttons;
     }
 
-    app.validateAndLogin = function() {
+    app.validateAndLogin = async function() {
       const emailInput = document.getElementById('emailInput');
       const email = emailInput?.value.trim() || '';
       
@@ -650,14 +658,16 @@
       }
       
       app.email = email;
+      await saveParticipant();
       localStorage.setItem('userEmail', email);
       goTo('home');
     };
 
-    app.bookDemo = function() {
+    app.bookDemo = async function() {
       if (app.selectedTimeslot !== null && app.selectedDemoIndex !== null) {
         const booking = { demoIndex: app.selectedDemoIndex, timeslotIndex: app.selectedTimeslot };
         app.bookings.push(booking);
+        await saveParticipant();
         localStorage.setItem('bookings', JSON.stringify(app.bookings));
         goTo('bookConfirm');
       }
@@ -675,7 +685,7 @@
       render();
     };
 
-    app.toggleHeart = function(index) {
+    app.toggleHeart = async function(index) {
       playClickSound();
       if (app.ratingHearts.includes(index)) {
         app.ratingHearts = app.ratingHearts.filter(i => i !== index);
@@ -683,12 +693,14 @@
         app.ratingHearts.push(index);
       }
       localStorage.setItem('ratingHearts', JSON.stringify(app.ratingHearts));
+      await saveParticipant();
       render();
     };
 
-    app.nextQuestion = function() {
+    app.nextQuestion = async function() {
       if (app.selectedAnswer !== null) {
         app.quizAnswers[app.currentQuestion] = app.selectedAnswer;
+        await saveParticipant();
         localStorage.setItem('quizAnswers', JSON.stringify(app.quizAnswers));
 
         if (app.currentQuestion < 5) {
@@ -698,6 +710,24 @@
         }
       }
     };
+
+    async function saveParticipant() {
+
+    if (!app.email) return;
+
+    const { error } = await supabaseClient
+        .from('participants')
+        .upsert({
+            email: app.email,
+            bookings: app.bookings,
+            quiz_answers: app.quizAnswers,
+            rating: app.ratingHearts.length
+        });
+
+    if (error) {
+        console.error("Erreur Supabase :", error);
+    }
+}
 
     function render() {
       if (app.email === '' && app.currentPage !== 'email') {
