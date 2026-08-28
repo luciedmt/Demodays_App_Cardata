@@ -715,18 +715,18 @@
 
     if (!app.email) return;
 
-    const { error } = await supabaseClient
+    const { data, error } = await supabaseClient
         .from('participants')
         .upsert({
             email: app.email,
             bookings: app.bookings,
             quiz_answers: app.quizAnswers,
             rating: app.ratingHearts.length
-        });
+        })
+        .select();
 
-    if (error) {
-        console.error("Erreur Supabase :", error);
-    }
+    console.log("DATA =", data);
+    console.log("ERROR =", error);
 }
 
     function render() {
