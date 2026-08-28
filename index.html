@@ -666,7 +666,13 @@
     app.bookDemo = async function() {
       if (app.selectedTimeslot !== null && app.selectedDemoIndex !== null) {
         const booking = { demoIndex: app.selectedDemoIndex, timeslotIndex: app.selectedTimeslot };
-        app.bookings.push(booking);
+        const exists = app.bookings.some(
+          b =>
+            b.demoIndex === app.selectedDemoIndex
+        );
+        if (!exists) {
+          app.bookings.push(booking);
+        }
         await saveParticipant();
         localStorage.setItem('bookings', JSON.stringify(app.bookings));
         goTo('bookConfirm');
@@ -711,27 +717,29 @@
       }
     };
 
-    async function saveParticipant() {
+async function saveParticipant() {
 
     if (!app.email) return;
 
     const { data, error } = await supabaseClient
         .from('participants')
         .upsert(
-        {
-          email: app.email,
-          bookings: app.bookings,
-          quiz_answers: app.quizAnswers,
-          rating: app.ratingHearts.length
-        },
-  {
-    onConflict: 'email'
-  }
-)
+            {
+                email: app.email,
+                bookings: app.bookings,
+                quiz_answers: app.quizAnswers,
+                rating: app.ratingHearts.length,
+                updated_at: new Date().toISOString()
+            },
+            {
+                onConflict: 'email'
+            }
+        )
         .select();
 
-    console.log("DATA =", data);
-    console.log("ERROR =", error);
+    if (error) {
+        console.error("Erreur Supabase :", error);
+    }
 }
 
     function render() {
