@@ -717,12 +717,17 @@
 
     const { data, error } = await supabaseClient
         .from('participants')
-        .upsert({
-            email: app.email,
-            bookings: app.bookings,
-            quiz_answers: app.quizAnswers,
-            rating: app.ratingHearts.length
-        })
+        .upsert(
+        {
+          email: app.email,
+          bookings: app.bookings,
+          quiz_answers: app.quizAnswers,
+          rating: app.ratingHearts.length
+        },
+  {
+    onConflict: 'email'
+  }
+)
         .select();
 
     console.log("DATA =", data);
