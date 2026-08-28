@@ -663,23 +663,42 @@
       goTo('home');
     };
 
-    app.bookDemo = async function() {
-      if (app.selectedTimeslot !== null && app.selectedDemoIndex !== null) {
+   app.bookDemo = async function() {
 
-        const booking = {
-          demoIndex: app.selectedDemoIndex,
-          timeslotIndex: app.selectedTimeslot
-        };
+  if (
+    app.selectedTimeslot !== null &&
+    app.selectedDemoIndex !== null
+  ) {
 
-        app.bookings.push(booking);
+    const booking = {
+      demoIndex: app.selectedDemoIndex,
+      timeslotIndex: app.selectedTimeslot
+    };
 
-        await supabaseClient
-          .from('bookings')
-          .insert({
-            email: app.email,
-            demo_index: app.selectedDemoIndex,
-            timeslot_index: app.selectedTimeslot
-          });
+    app.bookings.push(booking);
+
+    const { data, error } = await supabaseClient
+      .from('bookings')
+      .insert({
+        email: app.email,
+        demo_index: app.selectedDemoIndex,
+        timeslot_index: app.selectedTimeslot
+      })
+      .select();
+
+    console.log("BOOKING DATA =", data);
+    console.log("BOOKING ERROR =", error);
+
+    await saveParticipant();
+
+    localStorage.setItem(
+      'bookings',
+      JSON.stringify(app.bookings)
+    );
+
+    goTo('bookConfirm');
+  }
+};
 
     await saveParticipant();
 
