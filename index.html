@@ -688,16 +688,6 @@
 
         console.log("BOOKING DATA =", data);
         console.log("BOOKING ERROR =", error);
-
-        await saveParticipant();
-
-        localStorage.setItem(
-          'bookings',
-          JSON.stringify(app.bookings)
-        );
-
-        goTo('bookConfirm');
-      }
     };
 
     await saveParticipant();
