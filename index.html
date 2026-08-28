@@ -663,83 +663,43 @@
       goTo('home');
     };
 
-app.bookDemo = async function() {
+    app.bookDemo = async function() {
 
-  if (
-    app.selectedTimeslot !== null &&
-    app.selectedDemoIndex !== null
-  ) {
+      if (
+        app.selectedTimeslot !== null &&
+        app.selectedDemoIndex !== null
+      ) {
 
-    const booking = {
-      demoIndex: app.selectedDemoIndex,
-      timeslotIndex: app.selectedTimeslot
+        const booking = {
+          demoIndex: app.selectedDemoIndex,
+          timeslotIndex: app.selectedTimeslot
+        };
+
+        app.bookings.push(booking);
+
+        const { data, error } = await supabaseClient
+          .from('bookings')
+          .insert({
+            email: app.email,
+            demo_index: app.selectedDemoIndex,
+            timeslot_index: app.selectedTimeslot
+          })
+          .select();
+
+        console.log("BOOKING DATA =", data);
+        console.log("BOOKING ERROR =", error);
+
+        await saveParticipant();
+
+        localStorage.setItem(
+          'bookings',
+          JSON.stringify(app.bookings)
+        );
+
+        goTo('bookConfirm');
+      }
     };
 
-    app.bookings.push(booking);
-
-    const { data, error } = await supabaseClient
-      .from('bookings')
-      .insert({
-        email: app.email,
-        demo_index: app.selectedDemoIndex,
-        timeslot_index: app.selectedTimeslot
-      })
-      .select();
-
-    console.log("BOOKING DATA =", data);
-    console.log("BOOKING ERROR =", error);
-
-await saveParticipant();
-
-await fetch(
-  "https://api.brevo.com/v3/smtp/email",
-  {
-    method: "POST",
-    headers: {
-      "accept": "application/json",
-      "api-key": "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",
-      "content-type": "application/json"
-    },
-    body: JSON.stringify({
-      sender: {
-        name: "DataDemoDays",
-        email: "lucie.dumont@renault.com"
-      },
-      to: [
-        {
-          email: app.email
-        }
-      ],
-      subject: "✅ Confirmation de réservation DemoDays 2026",
-      htmlContent: `
-        <h2>Réservation confirmée</h2>
-
-        <p>Bonjour,</p>
-
-        <p>Votre réservation a bien été enregistrée.</p>
-
-        <ul>
-          <li><b>Démo :</b> ${CONTENT.demoDetail[app.selectedDemoIndex].name}</li>
-          <li><b>Créneau :</b> ${CONTENT.sessions[app.selectedTimeslot]}</li>
-          <li><b>Lieu :</b> ${CONTENT.demoPageInfo.location}</li>
-        </ul>
-
-        <p>A bientôt !</p>
-
-        <p>CarData DemoDays</p>
-      `
-    })
-  }
-);
-
-localStorage.setItem(
-  'bookings',
-  JSON.stringify(app.bookings)
-);
-
-goTo('bookConfirm');
-  }
-};
 
     app.selectTimeslot = function(index) {
       playClickSound();
