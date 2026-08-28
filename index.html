@@ -663,8 +663,8 @@
       goTo('home');
     };
 
-       app.bookDemo = async function() {
-    
+    app.bookDemo = async function() {
+
       if (
         app.selectedTimeslot !== null &&
         app.selectedDemoIndex !== null
@@ -688,17 +688,23 @@
 
         console.log("BOOKING DATA =", data);
         console.log("BOOKING ERROR =", error);
+
+        await saveParticipant();
+
+        localStorage.setItem(
+          'bookings',
+          JSON.stringify(app.bookings)
+        );
+
+        goTo('bookConfirm');
+      }
     };
 
-    await saveParticipant();
-
-    localStorage.setItem(
-      'bookings',
-      JSON.stringify(app.bookings)
-    );
-
-    goTo('bookConfirm');
-  }
+app.selectTimeslot = function(index) {
+  playClickSound();
+  app.selectedTimeslot =
+    app.selectedTimeslot === index ? null : index;
+  render();
 };
     app.selectTimeslot = function(index) {
       playClickSound();
