@@ -665,20 +665,32 @@
 
     app.bookDemo = async function() {
       if (app.selectedTimeslot !== null && app.selectedDemoIndex !== null) {
-        const booking = { demoIndex: app.selectedDemoIndex, timeslotIndex: app.selectedTimeslot };
-        const exists = app.bookings.some(
-          b =>
-            b.demoIndex === app.selectedDemoIndex
-        );
-        if (!exists) {
-          app.bookings.push(booking);
-        }
-        await saveParticipant();
-        localStorage.setItem('bookings', JSON.stringify(app.bookings));
-        goTo('bookConfirm');
-      }
-    };
 
+        const booking = {
+          demoIndex: app.selectedDemoIndex,
+          timeslotIndex: app.selectedTimeslot
+        };
+
+        app.bookings.push(booking);
+
+        await supabaseClient
+          .from('bookings')
+          .insert({
+            email: app.email,
+            demo_index: app.selectedDemoIndex,
+            timeslot_index: app.selectedTimeslot
+          });
+
+    await saveParticipant();
+
+    localStorage.setItem(
+      'bookings',
+      JSON.stringify(app.bookings)
+    );
+
+    goTo('bookConfirm');
+  }
+};
     app.selectTimeslot = function(index) {
       playClickSound();
       app.selectedTimeslot = app.selectedTimeslot === index ? null : index;
