@@ -700,12 +700,6 @@ app.bookDemo = async function() {
   }
 };
 
-app.selectTimeslot = function(index) {
-  playClickSound();
-  app.selectedTimeslot =
-    app.selectedTimeslot === index ? null : index;
-  render();
-};
     app.selectTimeslot = function(index) {
       playClickSound();
       app.selectedTimeslot = app.selectedTimeslot === index ? null : index;
