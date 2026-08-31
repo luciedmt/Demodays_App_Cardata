@@ -690,7 +690,7 @@
         console.log("BOOKING ERROR =", error);
 
         await saveParticipant();
-        await fetch(
+        const response = await fetch(
           "https://kavyxpwfwxwxvjawqmwi.supabase.co/functions/v1/send-booking-email",
           {
             method: "POST",
