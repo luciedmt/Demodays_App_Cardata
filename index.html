@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -690,7 +690,23 @@
         console.log("BOOKING ERROR =", error);
 
         await saveParticipant();
-
+        await fetch(
+          "https://kavyxpwfwxwxvjawqmwi.supabase.co/functions/v1/send-booking-email",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              record: {
+              email: app.email,
+              demo_index: app.selectedDemoIndex,
+              timeslot_index: app.selectedTimeslot
+              }
+            })
+          }
+        );
+        
         localStorage.setItem(
           'bookings',
           JSON.stringify(app.bookings)
