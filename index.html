@@ -706,6 +706,8 @@
             })
           }
         );
+        console.log("EMAIL STATUS =", emailResponse.status)
+        console.log("EMAIL RESPONSE =", await emailResponse.text());
         
         localStorage.setItem(
           'bookings',
