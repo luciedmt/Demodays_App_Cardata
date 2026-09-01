@@ -268,10 +268,18 @@
           description: 'Enhance customer interactions with data'
         }
       ],
+      ////////////////////////////////////////////////////////////////////////////////////////
       sessions: [
-        '08 sept 12:15',
-        '09 sept 12:15'
-      ],
+        {
+          label: '08 sept 12:15',
+          start: '2026-09-08T12:15:00'
+        },
+        {
+          label: '09 sept 12:15',
+          start: '2026-09-09T12:15:00'
+        }
+      ]
+      ///////////////////////////////////////////////////////////////////////////////////////
       demoPageInfo: {
         location: '@ Ruch std 56',
         presenter: 'by: Toto',
@@ -437,15 +445,15 @@
         ${CONTENT.bookConfirm.subtitle}
       `;
     }
-
+////////////////////////////////////////////////////////////////////////////////////
     function getDemoBookingInfo(demoIndex) {
       const booking = app.bookings.find(b => b.demoIndex === demoIndex);
       if (booking) {
-        return `${CONTENT.demoDetail[demoIndex].name}<br>${CONTENT.sessions[booking.timeslotIndex]}`;
+        return `${CONTENT.demoDetail[demoIndex].name}<br>${CONTENT.sessions[booking.timeslotIndex].label}`;
       }
       return `Demo${demoIndex + 1}`;
     }
-
+/////////////////////////////////////////////////////////////////////////////////////
     function getQuizAnswerInfo(questionIndex) {
       if (app.quizAnswers[questionIndex] !== undefined) {
         const answerLetter = String.fromCharCode(65 + app.quizAnswers[questionIndex]);
@@ -533,20 +541,20 @@
             { isLogo: true, onClick: () => goTo('home') }
           );
           break;
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         case 'demo':
           buttons.push(
             { label: CONTENT.demoPageInfo.location, onClick: () => {}, inactive: true },
             { label: CONTENT.demoPageInfo.presenter, onClick: () => {}, inactive: true },
             { label: CONTENT.demoPageInfo.duration, onClick: () => {}, inactive: true },
-            { label: CONTENT.sessions[0], onClick: () => app.selectTimeslot(0), selectedRed: app.selectedTimeslot === 0, inactive: false },
-            { label: CONTENT.sessions[1], onClick: () => app.selectTimeslot(1), selectedRed: app.selectedTimeslot === 1, inactive: false },
+            { label: CONTENT.sessions[0].label, onClick: () => app.selectTimeslot(0), selectedRed: app.selectedTimeslot === 0, inactive: false },
+            { label: CONTENT.sessions[1].label, onClick: () => app.selectTimeslot(1), selectedRed: app.selectedTimeslot === 1, inactive: false },
             { label: 'Book!', onClick: () => app.bookDemo(), active: app.selectedTimeslot !== null, inactive: app.selectedTimeslot === null },
             { label: '<', isBackBtn: true, onClick: () => goTo('program'), inactive: false },
             { isLogo: true, onClick: () => goTo('home') }
           );
           break;
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         case 'bookConfirm':
           buttons.push(
             { label: ':)', onClick: () => {}, inactive: true },
@@ -711,11 +719,33 @@
        // console.log("EMAIL STATUS =", emailResponse.status)
        // console.log("EMAIL RESPONSE =", await emailResponse.text());
         
+        //localStorage.setItem(
+        //  'bookings',
+        //  JSON.stringify(app.bookings)
+        //);
+
+        //goTo('bookConfirm');
+
         localStorage.setItem(
           'bookings',
           JSON.stringify(app.bookings)
         );
-
+        
+        if (
+          confirm("Ajouter cette réservation à votre agenda ?")
+        ) {
+        
+          downloadICS(
+            CONTENT.demoDetail[
+              app.selectedDemoIndex
+            ].name,
+            CONTENT.sessions[
+              app.selectedTimeslot
+            ].start
+          );
+        
+        }
+        
         goTo('bookConfirm');
       }
     };
@@ -784,6 +814,45 @@ async function saveParticipant() {
     }
 }
 
+
+    //ajout de la fonction pour envoyer le fichier ICS
+    
+    function downloadICS(demoName, dateString) {
+
+      const start = new Date(dateString);
+      const end = new Date(start.getTime() + 15 * 60000);
+    
+      const formatDate = (date) =>
+        date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    
+      const ics = `BEGIN:VCALENDAR
+    VERSION:2.0
+    BEGIN:VEVENT
+    SUMMARY:${demoName}
+    DTSTART:${formatDate(start)}
+    DTEND:${formatDate(end)}
+    LOCATION:Ruch std 56
+    DESCRIPTION:CarData DemoDays 2026
+    END:VEVENT
+    END:VCALENDAR`;
+    
+      const blob = new Blob(
+        [ics],
+        { type: "text/calendar;charset=utf-8" }
+      );
+    
+      const link = document.createElement("a");
+    
+      link.href = URL.createObjectURL(blob);
+      link.download = `${demoName}.ics`;
+    
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Jusque la 
+    
     function render() {
       if (app.email === '' && app.currentPage !== 'email') {
         app.currentPage = 'email';
