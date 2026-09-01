@@ -317,6 +317,9 @@
       selectedAnswer: null,
       selectedDemoIndex: null,
       currentQuestion: 0,
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      lastBooking: null,
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////////
       emailError: ''
     };
 
@@ -561,7 +564,21 @@
             { label: ':)', onClick: () => {}, inactive: true },
             { label: ':)', onClick: () => {}, inactive: true },
             { label: ':)', onClick: () => {}, inactive: true },
-            { label: ':)', onClick: () => {}, inactive: true },
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            {
+              label: '📅 Outlook',
+              onClick: () => addToOutlook(
+                CONTENT.demoDetail[
+                  app.lastBooking.demoIndex
+                ].name,
+                CONTENT.sessions[
+                  app.lastBooking.timeslotIndex
+                ].start
+              ),
+              active: true,
+              inactive: false
+            },
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             { label: 'Done!', onClick: () => goTo('myDemos'), active: true, inactive: false },
             { label: '<', isBackBtn: true, onClick: () => goTo('program'), inactive: false },
             { isLogo: true, onClick: () => goTo('home') }
@@ -730,21 +747,12 @@
           'bookings',
           JSON.stringify(app.bookings)
         );
-        
-        if (
-          confirm("Ajouter cette réservation à votre agenda ?")
-        ) {
-        
-          downloadICS(
-            CONTENT.demoDetail[
-              app.selectedDemoIndex
-            ].name,
-            CONTENT.sessions[
-              app.selectedTimeslot
-            ].start
-          );
-        
-        }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        app.lastBooking = {
+          demoIndex: app.selectedDemoIndex,
+          timeslotIndex: app.selectedTimeslot
+        };
+////////////////////////////////////////////////////////////////////////////////////////////////////////////                
         
         goTo('bookConfirm');
       }
@@ -815,43 +823,23 @@ async function saveParticipant() {
 }
 
 
-    //ajout de la fonction pour envoyer le fichier ICS
-    
-    function downloadICS(demoName, dateString) {
+    ///////////////////////////////////////////////////////////////////////ajout de la fonction pour envoyer le fichier ICS
+    function addToOutlook(demoName, startDate) {
 
-      const start = new Date(dateString);
+      const start = new Date(startDate);
       const end = new Date(start.getTime() + 15 * 60000);
     
-      const formatDate = (date) =>
-        date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+      const link =
+        "https://outlook.office.com/calendar/0/deeplink/compose?" +
+        "subject=" + encodeURIComponent(demoName) +
+        "&startdt=" + encodeURIComponent(start.toISOString()) +
+        "&enddt=" + encodeURIComponent(end.toISOString()) +
+        "&location=" + encodeURIComponent("Ruch std 56") +
+        "&body=" + encodeURIComponent("CarData DemoDays 2026");
     
-      const ics = `BEGIN:VCALENDAR
-    VERSION:2.0
-    BEGIN:VEVENT
-    SUMMARY:${demoName}
-    DTSTART:${formatDate(start)}
-    DTEND:${formatDate(end)}
-    LOCATION:Ruch std 56
-    DESCRIPTION:CarData DemoDays 2026
-    END:VEVENT
-    END:VCALENDAR`;
-    
-      const blob = new Blob(
-        [ics],
-        { type: "text/calendar;charset=utf-8" }
-      );
-    
-      const link = document.createElement("a");
-    
-      link.href = URL.createObjectURL(blob);
-      link.download = `${demoName}.ics`;
-    
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      window.open(link, "_blank");
     }
-
-    // Jusque la 
+    ///////////////////////////////////////////////////////////////////// Jusque la 
     
     function render() {
       if (app.email === '' && app.currentPage !== 'email') {
