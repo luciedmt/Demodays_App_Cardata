@@ -715,34 +715,6 @@
         console.log("BOOKING ERROR =", error);
 
         await saveParticipant();
-        const response = await fetch(
-          "https://kavyxpwfwxwxvjawqmwi.supabase.co/functions/v1/send-booking-email",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              record: {
-              email: app.email,
-              demo_index: app.selectedDemoIndex,
-              timeslot_index: app.selectedTimeslot
-              }
-            })
-          }
-        );
-      
-        console.log("EMAIL STATUS =", response.status);
-       // console.log("EMAIL STATUS =", emailResponse.status)
-       // console.log("EMAIL RESPONSE =", await emailResponse.text());
-        
-        //localStorage.setItem(
-        //  'bookings',
-        //  JSON.stringify(app.bookings)
-        //);
-
-        //goTo('bookConfirm');
-
         localStorage.setItem(
           'bookings',
           JSON.stringify(app.bookings)
@@ -753,7 +725,6 @@
           timeslotIndex: app.selectedTimeslot
         };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////                
-        
         goTo('bookConfirm');
       }
     };
