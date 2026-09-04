@@ -1,67 +1,155 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CarData Demos 2026</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#000000">
+<title>CarData Demos 2026</title>
+<link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sniglet:wght@400;800&display=swap"
+    rel="stylesheet"
+/>
+<style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }  
+   html,
+   body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
     }
-    html, body {
+      body {
+        background: #282431;
+        color: #fff;
+        font-family: 'Space Mono', monospace;
+      }
+    /* Handle mobile viewport height properly */
+   .app-container {
+        width: 100%;
+        height: var(--app-height, 100dvh);
+    
+        display: flex;
+        flex-direction: column;
+    
+        background: #282431;
+    
+        transform: translate3d(0,0,0);
+        will-change: transform;
+    }
+
+    /* Support dynamic viewport height for mobile */
+    .goodbye-message {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      background: #0a0a0a;
-      color: #f5f5f5;
-      font-family: 'Space Mono', monospace;
-      overflow: auto;
-    }
-    .app-container {
-      width: 100%;
-      height: 100vh;
+      background: linear-gradient(135deg, #121112 0%, #000 100%);
       display: flex;
+      align-items: center;
+      justify-content: center;
       flex-direction: column;
-      background: #000;
-    }
-    .screen-content {
-      height: 45%;
-      overflow-y: auto;
+      z-index: 9999;
+      text-align: center;
       padding: 24px;
-      background: #1a1a1a;
-      border: 2px solid #333;
-      -webkit-overflow-scrolling: touch;
+    }
+    .goodbye-message-text {
+      font-size: clamp(18px, 5vw, 24px);
+      color: #ffffff;
+      font-family: 'Space Mono', monospace;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+    .goodbye-heart {
+      font-size: clamp(40px, 15vw, 60px);
+      margin: 24px 0;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    .heart-firework-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    .heart-firework {
+      position: absolute;
+      font-size: 50px;
+      pointer-events: none;
+    }
+    @keyframes heartFly {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(0.3) rotate(360deg);
+      }
+    }
+
+    .heart-firework.animate {
+      animation: heartFly 2.5s ease-out forwards;
+    }
+
+   .screen-content {
+        flex: 42 1 0;
+        min-height: 0;
+        overflow-y: auto;
+        padding: clamp(12px, 2vw, 24px);
+        background: #000;
+        border: 5px solid #222;
+        border-radius: 12px;
+        -webkit-overflow-scrolling: touch;
     }
     .content-text {
-      background: #1a1a1a;
-      border: 2px solid #555;
+      background: #000;
+      border: 2px solid #000;
       border-radius: 12px;
       padding: 24px;
-      color: #e0e0e0;
+      color: #ffffff;
       line-height: 1.6;
-      font-size: 20px;
+      font-size: clamp(16px, 3vw, 20px);
       word-break: break-word;
       max-height: 100%;
     }
-    .keyboard {
-      height: 55%;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: 1fr 1fr 1fr;
-      gap: 12px;
-      padding: 16px;
-      background: #000;
-      border-top: 2px solid #333;
-    }
+
+   .keyboard {
+      flex: 58 1 0;
+     display: grid;
+     grid-template-columns: repeat(3, 1fr);
+     grid-template-rows: repeat(3, minmax(0, 1fr));
+     gap: clamp(6px, 1vw, 12px);
+     padding: clamp(8px, 2vw, 16px);
+     background: #000;
+     border-top: 5px solid #222;
+     border-radius: 12px;
+     min-height: 0;
+   }
+
     .key-btn {
-      background: #4a4a4a;
+      background: #282431;
       border: 2px solid #888;
-      color: #c0c0c0;
+      color: #ffffff;
       border-radius: 12px;
       font-family: 'Space Mono', monospace;
-      font-size: 18px;
+      font-size: clamp(14px, 2.5vw, 18px);
       cursor: pointer;
       transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
       font-weight: 600;
@@ -69,121 +157,184 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(200, 200, 200, 0.2);
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(200, 200, 200, 0.2);
       position: relative;
-      padding: 8px;
+      padding: clamp(6px, 1.5vw, 8px);
       line-height: 1.3;
       white-space: normal;
       word-break: break-word;
+      min-height: 40px;
     }
+
     .key-btn:not(:disabled):not(.inactive):hover {
       border-color: #aaa;
-      box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(200, 200, 200, 0.3), inset 0 0 12px rgba(255, 255, 255, 0.1);
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(200, 200, 200, 0.3), inset 0 0 12px rgba(255, 255, 255, 0.1);
       transform: translateY(-1px);
     }
+
     .key-btn:not(:disabled):not(.inactive):active {
       transform: scale(0.92);
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(200, 200, 200, 0.15);
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(200, 200, 200, 0.15);
     }
-    .key-btn.active {
-      background: #4a4a4a;
-      color: #ffff00;
+
+    .key-btn.active { /*Yellow*/
+      background: #121112;
+      color: #ffffff;
       border-color: #ffff00;
-      box-shadow: 5px 5px 20px rgba(255, 255, 0, 0.5), 0 0 25px rgba(255, 255, 0, 0.3), 0 0 15px rgba(200, 200, 200, 0.2), inset 0 0 12px rgba(255, 255, 0, 0.1);
+      box-shadow: 10px 10px 20px rgba(255, 255, 0, 0.5), 0 0 25px rgba(255, 255, 0, 0.3), 0 0 15px rgba(200, 200, 200, 0.2), inset 0 0 12px rgba(255, 255, 0, 0.1);
       font-weight: 700;
     }
+
     .key-btn.active:active {
       transform: scale(0.92);
-      box-shadow: 2px 2px 10px rgba(255, 255, 0, 0.3), 0 0 15px rgba(255, 255, 0, 0.2), 0 0 10px rgba(200, 200, 200, 0.15);
+      box-shadow: 10px 10px 20px rgba(255, 255, 0, 0.3), 0 0 15px rgba(255, 255, 0, 0.2), 0 0 10px rgba(200, 200, 200, 0.15);
     }
     .key-btn.selected-red {
       border-color: #ff5555;
-      box-shadow: 5px 5px 20px rgba(255, 85, 85, 0.4), 0 0 25px rgba(255, 85, 85, 0.2), 0 0 15px rgba(200, 200, 200, 0.2);
-      color: #ffff00;
+      box-shadow: 10px 10px 20px rgba(255, 85, 85, 0.4), 0 0 25px rgba(255, 85, 85, 0.2), 0 0 15px rgba(200, 200, 200, 0.2);
+      color: #ffffff;
     }
+
     .key-btn.selected-red:active {
       transform: scale(0.92);
-      box-shadow: 2px 2px 10px rgba(255, 85, 85, 0.2), 0 0 15px rgba(255, 85, 85, 0.1), 0 0 10px rgba(200, 200, 200, 0.15);
+      box-shadow: 10px 10px 20px rgba(255, 85, 85, 0.2), 0 0 15px rgba(255, 85, 85, 0.1), 0 0 10px rgba(200, 200, 200, 0.15);
     }
+
+    .key-btn.heart-unselected {
+      background: #282431;
+      border-color: #aaa;
+      color: #ffffff;
+      font-size: clamp(24px, 5vw, 38px);
+    }
+
+    .key-btn.heart-unselected:hover {
+      border-color: #aaa;
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(200, 200, 200, 0.3), inset 0 0 12px rgba(255, 255, 255, 0.1);
+    }
+
     .key-btn.heart-selected {
       border-color: #ff5555;
-      color: #ff5555;
-      background: #2a1a1a;
-      box-shadow: 5px 5px 20px rgba(255, 85, 85, 0.6), 0 0 40px rgba(255, 85, 85, 0.5), inset 0 0 15px rgba(255, 85, 85, 0.2);
-      font-size: 24px;
+      color: #ffffff;
+      background: #282431;
+      box-shadow: 10px 10px 20px rgba(255, 85, 85, 0.6), 0 0 40px rgba(255, 85, 85, 0.5), inset 0 0 15px rgba(255, 85, 85, 0.2);
+      font-size: clamp(24px, 5vw, 38px);
       font-weight: 800;
     }
+
     .key-btn.heart-selected:active {
       transform: scale(0.92);
-      box-shadow: 2px 2px 15px rgba(255, 85, 85, 0.6), 0 0 30px rgba(255, 85, 85, 0.4), inset 0 0 12px rgba(255, 85, 85, 0.2);
+      box-shadow: 10px 10px 20px rgba(255, 85, 85, 0.6), 0 0 30px rgba(255, 85, 85, 0.4), inset 0 0 12px rgba(255, 85, 85, 0.2);
     }
+
     .key-btn.heart-selected:hover {
-      box-shadow: 5px 5px 25px rgba(255, 85, 85, 0.8), 0 0 50px rgba(255, 85, 85, 0.6), inset 0 0 18px rgba(255, 85, 85, 0.3);
+      box-shadow: 10px 10px 25px rgba(255, 85, 85, 0.8), 0 0 50px rgba(255, 85, 85, 0.6), inset 0 0 18px rgba(255, 85, 85, 0.3);
       transform: translateY(-1px);
+
     }
+
+    .key-btn.close-btn {
+      background: #282431;
+      border-color: #888;
+      color: #ffffff;
+      grid-column: 1;
+      grid-row: 3;
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(200, 200, 200, 0.2);
+      font-size: clamp(12px, 3vw, 24px);
+    }
+
+    .key-btn.close-btn:not(.inactive):hover {
+      border-color: #aaa;
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(200, 200, 200, 0.3), inset 0 0 12px rgba(255, 255, 255, 0.1);
+    }
+
+    .key-btn.close-btn:active {
+      transform: scale(0.92);
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(200, 200, 200, 0.15);
+    }
+
     .key-btn.inactive {
       background: transparent;
       border-color: #444;
-      color: #c0c0c0;
+      color: #ffffff;
       cursor: not-allowed;
       opacity: 0.5;
       box-shadow: none;
     }
+
     .key-btn.back-btn {
-      background: #4a4a4a;
+      background: #282431;
       border-color: #888;
-      color: #c0c0c0;
+      color: #ffffff;
       grid-column: 1;
       grid-row: 3;
-      box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(200, 200, 200, 0.2);
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(200, 200, 200, 0.2);
+      font-size: clamp(16px, 4vw, 24px);
     }
+
+    .key-btn.back-btn.transparent-bg {
+      background: #282431; /*transparent*/
+    }
+
     .key-btn.back-btn:not(.inactive):hover {
       border-color: #aaa;
-      box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(200, 200, 200, 0.3), inset 0 0 12px rgba(255, 255, 255, 0.1);
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(200, 200, 200, 0.3), inset 0 0 12px rgba(255, 255, 255, 0.1);
     }
+
     .key-btn.back-btn:active {
       transform: scale(0.92);
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(200, 200, 200, 0.15);
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(200, 200, 200, 0.15);
     }
+
     .key-btn.logo-btn {
-      grid-column: 2 / 4;
-      grid-row: 3;
-      aspect-ratio: 2 / 1;
       background: #ff5555;
       border: 2px solid #ff6666;
-      padding: 6px;
       font-weight: 800;
       letter-spacing: 1px;
-      box-shadow: 5px 5px 20px rgba(255, 85, 85, 0.6), 0 0 30px rgba(255, 85, 85, 0.4), 0 0 15px rgba(200, 200, 200, 0.2);
+      box-shadow:
+        10px 10px 20px rgba(255, 85, 85, 0.6),
+        0 0 30px rgba(255, 85, 85, 0.4),
+        0 0 15px rgba(200, 200, 200, 0.2);
+      border-radius: 12px;
+      position: relative;
+      padding: clamp(6px, 1.5vw, 8px);
+      line-height: 1.3;
+      min-height: 40px;
+      grid-column: span 2;
+      grid-row: span 1;
     }
+
     .key-btn.logo-btn:hover {
-      box-shadow: 5px 5px 25px rgba(255, 85, 85, 0.8), 0 0 35px rgba(255, 85, 85, 0.5), 0 0 20px rgba(200, 200, 200, 0.3);
+      box-shadow: 10px 10px 25px rgba(255, 85, 85, 0.8), 0 0 35px rgba(255, 85, 85, 0.5), 0 0 20px rgba(200, 200, 200, 0.3);
       border-color: #ff7777;
       transform: translateY(-1px);
     }
+
     .key-btn.logo-btn:active {
       transform: scale(0.92);
-      box-shadow: 2px 2px 15px rgba(255, 85, 85, 0.5), 0 0 20px rgba(255, 85, 85, 0.3), 0 0 10px rgba(200, 200, 200, 0.15);
+      box-shadow: 10px 10px 20px rgba(255, 85, 85, 0.5), 0 0 20px rgba(255, 85, 85, 0.3), 0 0 10px rgba(200, 200, 200, 0.15);
     }
+
     .logo-text {
-      font-size: 41px;
+      font-size: clamp(28px, 7vw, 41px);
       color: #ffff00;
       font-weight: 800;
       font-family: 'Sniglet', cursive;
       letter-spacing: 1px;
       text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -2px 0 0 #000, 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
+
     input[type="email"] {
       width: 100%;
-      padding: 12px;
+      padding: clamp(10px, 2vw, 12px);
       background: #2a2a2a;
       border: 2px solid #555;
-      color: #f5f5f5;
+      color: #ffffff;
       border-radius: 6px;
       font-family: 'Space Mono', monospace;
       margin-top: 12px;
-      font-size: 16px;
+      font-size: clamp(14px, 2.5vw, 16px);
     }
+
     input[type="email"]:focus {
       outline: none;
       border-color: #6B5BFF;
@@ -191,120 +342,289 @@
     }
     .error-msg {
       color: #ff5555;
-      font-size: 15px;
+      font-size: clamp(12px, 2vw, 15px);
       margin-top: 8px;
     }
-  </style>
+
+   .email-page .screen-content {
+     flex: 75%;
+   
+     display: flex;
+     justify-content: center;
+     align-items: center;
+   }
+   
+   .email-page .keyboard {
+     flex: 25%;
+   }
+
+   .email-page .content-text {
+     width: min(600px, 100%);
+     text-align: center;
+   }
+
+   #debugHeight {
+   position: fixed;
+   top: 200px;
+   left: 50%;
+   transform: translateX(-50%);
+   z-index: 99999;
+   background: red;
+   color: white;
+   padding: 8px 12px;
+   border-radius: 8px;
+   font-size: 16px;
+   font-weight: bold;
+ }
+
+</style>
 </head>
 <body>
-  <div class="app-container">
-    <div class="screen-content" id="mainContent"><div class="content-text" id="contentText"></div></div>
-    <div class="keyboard" id="keyboard"></div>
-  </div>
+<div class="app-container">
+<div id="goodbyeScreen" class="goodbye-message" style="display: none;">
+<div class="goodbye-message-text">
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <script>
+        We respect your decision<br>
+
+        Looking forward to see you<br>
+
+        at CarData stand!
+</div>
+<div class="goodbye-heart">♥️</div>
+</div>
+<div id="heartFireworkContainer" class="heart-firework-container"></div>
+<div class="screen-content" id="mainContent"><div class="content-text" id="contentText"></div></div>
+<div class="keyboard" id="keyboard"></div>
+</div>
+/* ----------------------------------------------------------------------------------------------*/
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+/* ----------------------------------------------------------------------------------------------*/    
+<script>
+
+  if (!sessionStorage.getItem('initialReloadDone')) {
+    sessionStorage.setItem('initialReloadDone', 'true');
+    window.location.reload();
+}
+    // ========================================
+    // TON APPLICATION COMMENCE ICI
+    // ========================================
+
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    /* ----------------------------------------------------------------------------------------------*/
     const SUPABASE_URL = "https://kavyxpwfwxwxvjawqmwi.supabase.co";
     const SUPABASE_KEY = "sb_publishable__7N-coS7EthfgyziZWoB-A_3tkDDBf4";
     const supabaseClient = supabase.createClient(
         SUPABASE_URL,
         SUPABASE_KEY
     );
+/* ----------------------------------------------------------------------------------------------*/
 
     function playClickSound() {
-      try {
-        const now = audioContext.currentTime;
-        const osc = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-        osc.connect(gain);
-        gain.connect(audioContext.destination);
-        osc.frequency.setValueAtTime(900, now);
-        osc.frequency.exponentialRampToValueAtTime(500, now + 0.04);
-        gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0, now + 0.04);
-        osc.start(now);
-        osc.stop(now + 0.04);
-      } catch (e) {}
+        try {
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+
+            osc.frequency.setValueAtTime(900, now);
+            osc.frequency.exponentialRampToValueAtTime(500, now + 0.04);
+
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0, now + 0.04);
+
+            osc.start(now);
+            osc.stop(now + 0.04);
+        } catch (e) {}
     }
 
     // ============ CONTENT TEMPLATES - EASY TO MODIFY ============
+
     const CONTENT = {
       email: {
-        title: ':> Please identify yourself by your email',
-        subtitle: ':> in order to receive your program and quiz results.'
-      },
+          title: ':> Please enter your email to receive your program & Quiz results!',
+          subtitle: `
+            :> Thanks to Rate CarData DemoDays! <3
+            <br>
+            :> otherwise press Esc to Quit!
+          `
+        },
       home: {
-        title: ':> Welcome to DemoDays 2026!'
+        title: ':> Welcome to DemoDays 2026!<br>:>See the Demos Program! <br>:>Go Quiz to win the CarData prize!<br>:>Take a look @ your Demo Sessions & Quiz results!<br>:>Thanks to Rate CarData DemoDays! <3'
       },
       program: {
         title: ':> 2026 CarData Demos!',
-        subtitle: ':> Chose a Demo to know more & reserve!'
+        subtitle: ':> Book for your Demo sessions!'
       },
-      demoDetail: [
-        {
-          name: 'DataDrivenDesign',
-          description: 'Transform your data into visual insights'
+    demoDetail: [
+     {
+          name: 'EVidence',
+          presenter: 'Thomas A + Claire',
+          description: 'La transition vers l’électrique, démontrée avec vos propres km',
+          location: 'Ruch - Stand CarData (25)',
+          duration: '20 min',
+          sessionIndices: [0, 1]
         },
+        
         {
-          name: 'Carlytics',
-          description: 'Advanced analytics for car data streams'
+          name: 'Carlytics & Data Driven Design',
+          presenter: 'Baharan + Lucie + Bertrand',
+          description: 'Anticiper et mesurer les usages du Systeme Multimédia',
+          location: 'Ruch - Stand CarData (25)',
+          duration: '20 min',
+          sessionIndices: [2, 3]
         },
+        
         {
-          name: 'CarDataUsage',
-          description: 'Monitor and optimize data usage'
+          name: 'Right sizing battery for REEV',
+          presenter: 'Alexandre',
+          description: "Dimensionner la batterie d'un Range Extender sur les usages réels, pas sur des hypothèses",
+          location: 'Ruch - Stand CarData (25)',
+          duration: '20 min',
+          sessionIndices: [4, 5]
         },
+        
         {
-          name: 'EVA',
-          description: 'Electric vehicle analytics platform'
+          name: 'Road Health pour les Pval',
+          presenter: 'Thomas L',
+          description: 'Les routes changent, nos PVAL aussi',
+          location: 'Ruch - Stand CarData (25)',
+          duration: '20 min',
+          sessionIndices: [6, 7]
         },
+        
         {
-          name: 'DataMobilize',
-          description: 'Real-time mobile data solutions'
+          name: 'La CarData Usage Client pour le dimensionnement GMP à l’objectif de fiabilité',
+          presenter: 'Isabelle',
+          description: 'Transformer la connaissance de nos clients sur leurs marchés en décision d’ingénierie robustes',
+          location: 'Ruch - Stand CarData (25)',
+          duration: '20 min',
+          sessionIndices: [8, 9]
         },
+        
         {
-          name: 'CustomerExperience',
-          description: 'Enhance customer interactions with data'
+          name: 'Dr Battery',
+          presenter: 'Thomas A',
+          description: 'Un outil pour bêta-tester des fonctionnalités à valeur ajoutée pour MyRenault',
+          location: 'Ruch - Stand CarData (25)',
+          duration: '20 min',
+          sessionIndices: [10, 11]
         }
-      ],
+    ],
+
+
       ////////////////////////////////////////////////////////////////////////////////////////
-      sessions: [
-        {
-          label: '08 sept 12:15',
-          start: '2026-09-08T12:15:00'
-        },
-        {
-          label: '09 sept 12:15',
-          start: '2026-09-09T12:15:00'
-        }
-      ],
+    sessions: [
+      { label: '08 sept 12:10', start: '2026-09-08T12:10:00' },
+      { label: '09 sept 12:10', start: '2026-09-09T12:10:00' },
+    
+      { label: '08 sept 12:30', start: '2026-09-08T12:30:00' },
+      { label: '09 sept 12:30', start: '2026-09-09T12:30:00' },
+    
+      { label: '08 sept 12:50', start: '2026-09-08T12:50:00' },
+      { label: '09 sept 12:50', start: '2026-09-09T12:50:00' },
+    
+      { label: '08 sept 13:10', start: '2026-09-08T13:10:00' },
+      { label: '09 sept 13:10', start: '2026-09-09T13:10:00' },
+    
+      { label: '08 sept 13:30', start: '2026-09-08T13:30:00' },
+      { label: '09 sept 13:30', start: '2026-09-09T13:30:00' },
+    
+      { label: '08 sept 13:50', start: '2026-09-08T13:50:00' },
+      { label: '09 sept 13:50', start: '2026-09-09T13:50:00' }
+    ],
       ///////////////////////////////////////////////////////////////////////////////////////
-      demoPageInfo: {
-        location: '@ Ruch std 56',
-        presenter: 'by: Toto',
-        duration: '15 min'
-      },
+        
+      /*sessions: [
+
+        'Session 1',
+        'Session 2',
+        'Session 3',
+        'Session 4',
+        'Session 5',
+        'Session 6',
+        'Session 7',
+        'Session 8',
+        'Session 9',
+        'Session 10',
+        'Session 11',
+        'Session 12'
+      ],*/
+
       quiz: {
-        title: ':> 2026 CarData Quizz!',
-        subtitle: ':> Let\'s Quizz to win CarData 2026 award!!! <3'
+        title: ':> 2026 CarData Quiz!',
+        subtitle: ':> Let\'s Quiz to win CarData 2026 award!!! <3'
       },
+
       bookConfirm: {
-        title: ':> Press "Done!" if you finished reserving!',
-        subtitle: ':> Go back to continue Booking Demos! :)'
+        title: ':> For more Demos, press back button!',
+        subtitle: ':> Press Done if finished booking! :)'
       },
+
       myDemos: {
-        title: ':> Here is your Demo prog!',
-        subtitle: ':> Take a screenshot & be ontime! See you soon!!! <3'
+        title: ':> Cool! Your Demo program is ready!',
+        subtitle: ':> Take a screenshot & be Ontime for your session! See you!<br>:> Hint: Go to CarData to find the way! B-)'
+
       },
-      myQuiz: {
-        title: ':> Here are your answers!',
-        subtitle: ':> send me a screenshot and email to Baharan@Renault to win The CarData prize!'
+
+      questions: [
+
+      {
+        question: "Avec un Range Extender (batterie 28 kWh) et une recharge par jour, quelle proportion de leurs journées les conducteurs moyens de Renault Austral pourraient-ils faire 100 % en électrique ?",
+        answerA: "69 %",
+        answerB: "81 %",
+        answerC: "92 %"
       },
-      rating: {
-        title: ':> That wa so DataDriven of you! <3 Keep connected!',
-        subtitle: ':> Please like below to rate our Demo!'
+    
+      {
+        question: "Quelles informations sur l’usage en électrique sont les plus demandées par les utilisateurs ?",
+        answerA: "L'état de santé batterie",
+        answerB: "La consommation lors des trajets",
+        answerC: "Le coût des charges"
+      },
+    
+      {
+        question: "Combien de véhicules thermiques Renault en Europe pourraient simuler leur usage réel en véhicule électrique ?",
+        answerA: "300 000",
+        answerB: "800 000",
+        answerC: "1 300 000"
+      },
+    
+      {
+        question: "Quel est le taux d'erreur sur les données ralentisseurs OSM observées sur une ville (Rouen) ?",
+        answerA: "25 %",
+        answerB: "40 %",
+        answerC: "55 %"
+      },
+    
+      {
+        question: "Selon la présentation, pourquoi ne pouvons-nous pas nous fier uniquement à notre propre opinion ?",
+        answerA: "Parce que nous ne sommes pas nos clients",
+        answerB: "Parce que les clients ne savent pas ce qu'ils veulent",
+        answerC: "Parce que les données remplacent totalement les retours utilisateurs"
+      },
+    
+      {
+        question: "Avant la digitalisation des livres blancs, où se trouvait principalement la connaissance Usage Client ?",
+        answerA: "Dans les calculateurs véhicules",
+        answerB: "Dans les documents PDF et dans la tête des experts",
+        answerC: "Dans les bases de données de simulation"
       }
+    
+    ],
+        
+
+      myQuiz: {
+        title: ':> Geart Job! Here are your answers!',
+        subtitle: ':> See you at 14:00 for The CarData prize session!<br>:> Hint: Go to CarData to find the way! B-)'
+      },
+
+      rating: {
+        title: ':> That wa so DataDriven of you! <3',
+        subtitle: ':> Thanks to rate CarData DemoDays! <3'
+      }
+
     };
 
     const app = {
@@ -321,10 +641,12 @@
       lastBooking: null,
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////
       emailError: ''
+
     };
 
     function validateEmail(email) {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
     }
 
     function resetApp() {
@@ -343,6 +665,7 @@
       app.emailError = '';
       app.currentPage = 'email';
       render();
+
     }
 
     function goTo(page, param = null) {
@@ -359,7 +682,7 @@
       }
       render();
     }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     function renderEmailPage() {
       return `
         ${CONTENT.email.title}
@@ -371,83 +694,147 @@
       `;
     }
 
+ //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+   /* function renderEmailPage() {
+      return `
+<span style="color: #ffffff;">
+
+          ${CONTENT.email.title}
+<br>
+
+          ${CONTENT.email.subtitle}
+<br>
+<input type="email" id="emailInput" placeholder="name@email.com">
+
+          ${app.emailError ? `<div class="error-msg" style="color: #ffffff;">${app.emailError}</div>` : ''}
+</span>
+
+      `;
+
+    }*/
+
     function renderHomePage() {
-      return CONTENT.home.title;
+      return `<span style="color: #ffffff;">${CONTENT.home.title}</span>`;
     }
 
     function renderProgramPage() {
       return `
-        ${CONTENT.program.title}
-        <br>
-        ${CONTENT.program.subtitle}
+        <span style="color: #ffffff;">
+          ${CONTENT.program.title}
+            <br>
+          ${CONTENT.program.subtitle}
+        </span>
       `;
+
     }
 
     function renderDemoDetail(index) {
       const demo = CONTENT.demoDetail[index];
+      const session1Index = demo.sessionIndices[0];
+      const session2Index = demo.sessionIndices[1];
+      const session1Name = CONTENT.sessions[session1Index];
+      const session2Name = CONTENT.sessions[session2Index];
       return `
-        :> ${demo.name} Title
-        <br>
-        :> Description: ${demo.description}
-        <br>
-        :> Book Demo session Below!
+<span style="color: #ffffff;">
+          :> ${demo.name}
+<br>
+          :> ${demo.description}<br>
+          :> Choose your session below!
+</span>
       `;
     }
 
     function renderQuizStartPage() {
       return `
-        ${CONTENT.quiz.title}
-        <br>
-        ${CONTENT.quiz.subtitle}
+<span style="color: #ffffff;">
+          ${CONTENT.quiz.title}
+<br>
+          ${CONTENT.quiz.subtitle}
+</span>
       `;
     }
 
     function renderQuestionPage(index) {
+    
+      const q = CONTENT.questions[index];
+    
       return `
-        :> Q${index + 1}: Question Here.................
-        <br>.................
-        <br>
-        :> Please choose the answer below!
-      `;
+    <span style="color: #ffffff;">
+    
+    :> Q${index + 1}/6
+    
+    <br><br>
+    
+    ${q.question}
+    
+    <br><br>
+    
+    A : ${q.answerA}
+    
+    <br><br>
+    
+    B : ${q.answerB}
+    
+    <br><br>
+    
+    C : ${q.answerC}
+    
+    <br><br>
+    
+    :> Please choose your answer below!
+    
+    </span>
+    `;
     }
 
     function renderMyDemosPage() {
       if (app.bookings.length === 0) {
-        return `:> No demos booked yet!`;
+        return `<span style="color: #ffffff;">:> No demos booked yet!</span>`;
       }
       return `
-        ${CONTENT.myDemos.title}
-        <br>
-        ${CONTENT.myDemos.subtitle}
+<span style="color: #ffffff;">
+          ${CONTENT.myDemos.title}
+<br>
+          ${CONTENT.myDemos.subtitle}
+</span>
       `;
     }
 
     function renderMyQuizPage() {
       if (Object.keys(app.quizAnswers).length === 0) {
-        return `:> No quiz answers yet!`;
+        return `<span style="color: #ffffff;">:> No quiz answers yet!</span>`;
       }
+
       return `
-        ${CONTENT.myQuiz.title}
-        <br>
-        ${CONTENT.myQuiz.subtitle}
+<span style="color: #ffffff;">
+          ${CONTENT.myQuiz.title}
+<br>
+          ${CONTENT.myQuiz.subtitle}
+</span>
       `;
     }
-
+ 
     function renderRatingPage() {
       return `
-        ${CONTENT.rating.title}
-        <br>
-        ${CONTENT.rating.subtitle}
+<span style="color: #ffffff;">
+          ${CONTENT.rating.title}
+<br>
+          ${CONTENT.rating.subtitle}
+</span>
       `;
     }
 
     function renderBookingConfirm() {
       return `
-        ${CONTENT.bookConfirm.title}
-        <br>
-        ${CONTENT.bookConfirm.subtitle}
+<span style="color: #ffffff;">
+          ${CONTENT.bookConfirm.title}
+<br>
+          ${CONTENT.bookConfirm.subtitle}
+</span>
       `;
     }
+
 ////////////////////////////////////////////////////////////////////////////////////
     function getDemoBookingInfo(demoIndex) {
       const booking = app.bookings.find(b => b.demoIndex === demoIndex);
@@ -457,22 +844,39 @@
       return `Demo${demoIndex + 1}`;
     }
 /////////////////////////////////////////////////////////////////////////////////////
+
+
+    
+  /*  function getDemoBookingInfo(demoIndex) {
+      const booking = app.bookings.find(b => b.demoIndex === demoIndex);
+      if (booking) {
+        const demo = CONTENT.demoDetail[demoIndex];
+        const actualSessionIndex = demo.sessionIndices[booking.timeslotIndex];
+        const sessionName = CONTENT.sessions[actualSessionIndex];
+        return `<span style="color: #ffffff;">
+          ${demo.name}<br>
+          ${sessionName}<br>
+          ${demo.location} • ${demo.presenter} • ${demo.duration}
+</span>`;
+      }
+      return `<span style="color: #ffffff;">Demo${demoIndex + 1}</span>`;
+    }*/
+
+    
     function getQuizAnswerInfo(questionIndex) {
       if (app.quizAnswers[questionIndex] !== undefined) {
         const answerLetter = String.fromCharCode(65 + app.quizAnswers[questionIndex]);
-        return `Q${questionIndex + 1} - ${answerLetter}`;
+        return `<span style="color: #ffffff;">Q${questionIndex + 1} - ${answerLetter}</span>`;
       }
-      return `Q${questionIndex + 1}`;
+      return `<span style="color: #ffffff;">Q${questionIndex + 1}</span>`;
     }
-
+ 
     function renderKeyboard() {
       const kb = document.getElementById('keyboard');
       kb.innerHTML = '';
-
       const buttons = getKeyboardButtons();
       buttons.forEach((btn, idx) => {
         let keyBtn;
-        
         if (btn.isLogo) {
           keyBtn = document.createElement('button');
           keyBtn.className = 'key-btn logo-btn';
@@ -480,6 +884,16 @@
         } else if (btn.isBackBtn) {
           keyBtn = document.createElement('button');
           keyBtn.className = 'key-btn back-btn';
+          if (btn.inactive) keyBtn.classList.add('inactive');
+          // Add transparent background on specific pages
+
+          if (['myDemos', 'demo', 'quiz', 'myQuiz'].includes(app.currentPage)) {
+            keyBtn.classList.add('transparent-bg');
+          }
+          keyBtn.textContent = btn.label;
+        } else if (btn.isCloseBtn) {
+          keyBtn = document.createElement('button');
+          keyBtn.className = 'key-btn close-btn';
           if (btn.inactive) keyBtn.classList.add('inactive');
           keyBtn.textContent = btn.label;
         } else {
@@ -489,22 +903,21 @@
           if (btn.active) keyBtn.classList.add('active');
           if (btn.selectedRed) keyBtn.classList.add('selected-red');
           if (btn.heartSelected) keyBtn.classList.add('heart-selected');
+          if (btn.heartUnselected) keyBtn.classList.add('heart-unselected');
           keyBtn.innerHTML = btn.label;
         }
-        
         keyBtn.onclick = () => {
           if (!btn.inactive && btn.onClick) {
             btn.onClick();
           }
         };
-        
         kb.appendChild(keyBtn);
       });
     }
 
+//========================================================button labels
     function getKeyboardButtons() {
       const buttons = [];
-
       switch(app.currentPage) {
         case 'email':
           buttons.push(
@@ -514,37 +927,38 @@
             { label: '', onClick: () => {}, inactive: true },
             { label: '', onClick: () => {}, inactive: true },
             { label: '', onClick: () => {}, inactive: true },
-            { label: 'Esc', isBackBtn: true, onClick: () => goTo('email'), inactive: false },
+            { label: 'Esc', isBackBtn: true, onClick: () => app.showGoodbye(), inactive: false },
             { isLogo: true, onClick: () => app.validateAndLogin() }
           );
-          break;
 
+          break;
         case 'home':
           buttons.push(
-            { label: 'Prog', onClick: () => goTo('program'), inactive: false },
+            { label: 'Program', onClick: () => goTo('program'), inactive: false },
             { label: ':)', onClick: () => {}, inactive: true },
             { label: 'Quiz', onClick: () => goTo('quiz'), inactive: false },
             { label: 'MyProg', onClick: () => goTo('myDemos'), inactive: app.bookings.length === 0 },
             { label: ':)', onClick: () => {}, inactive: true },
-            { label: 'MyQuizz', onClick: () => goTo('myQuiz'), inactive: Object.keys(app.quizAnswers).length === 0 },
+            { label: 'MyQuiz', onClick: () => goTo('myQuiz'), inactive: Object.keys(app.quizAnswers).length === 0 },
             { label: '❤️', isBackBtn: true, onClick: () => goTo('rating'), inactive: false },
-            { isLogo: true, onClick: () => goTo('home') }
+            { isLogo: true, onClick: () => goTo('rating') }
           );
           break;
-
         case 'program':
           buttons.push(
-            { label: 'Demo1', onClick: () => goTo('demo', 0), inactive: false },
-            { label: 'Demo 2', onClick: () => goTo('demo', 1), inactive: false },
-            { label: 'Demo 3', onClick: () => goTo('demo', 2), inactive: false },
-            { label: 'Demo 4', onClick: () => goTo('demo', 3), inactive: false },
-            { label: 'Demo 5', onClick: () => goTo('demo', 4), inactive: false },
-            { label: 'Demo 6', onClick: () => goTo('demo', 5), inactive: false },
+            { label: 'EVidence', onClick: () => goTo('demo', 0), inactive: false },
+            { label: 'Carlytics & DDD', onClick: () => goTo('demo', 1), inactive: false },
+            { label: 'Range Extender', onClick: () => goTo('demo', 2), inactive: false },
+        
+            { label: 'Road Health', onClick: () => goTo('demo', 3), inactive: false },
+            { label: 'Usage Client GMP', onClick: () => goTo('demo', 4), inactive: false },
+            { label: 'Dr Battery', onClick: () => goTo('demo', 5), inactive: false },
+        
             { label: ':)', isBackBtn: true, onClick: () => {}, inactive: true },
             { isLogo: true, onClick: () => goTo('home') }
           );
           break;
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
         case 'demo':
           buttons.push(
             { label: CONTENT.demoPageInfo.location, onClick: () => {}, inactive: true },
@@ -557,34 +971,107 @@
             { isLogo: true, onClick: () => goTo('home') }
           );
           break;
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        case 'bookConfirm':
+*/
+
+        case 'demo':
+          const demoInfo = CONTENT.demoDetail[app.selectedDemoIndex];
+          const demoSession1Index = demoInfo.sessionIndices[0];
+          const demoSession2Index = demoInfo.sessionIndices[1];
+        
           buttons.push(
-            { label: ':)', onClick: () => {}, inactive: true },
-            { label: ':)', onClick: () => {}, inactive: true },
-            { label: ':)', onClick: () => {}, inactive: true },
-            { label: ':)', onClick: () => {}, inactive: true },
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            { label: demoInfo.location, onClick: () => {}, inactive: true },
+            { label: demoInfo.presenter, onClick: () => {}, inactive: true },
+            { label: demoInfo.duration, onClick: () => {}, inactive: true },
             {
-              label: '📅 Outlook',
-              onClick: () => addToOutlook(
-                CONTENT.demoDetail[
-                  app.lastBooking.demoIndex
-                ].name,
-                CONTENT.sessions[
-                  app.lastBooking.timeslotIndex
-                ].start
-              ),
-              active: true,
+              label: CONTENT.sessions[demoSession1Index].label,
+              onClick: () => app.selectTimeslot(0),
+              selectedRed: app.selectedTimeslot === 0,
               inactive: false
             },
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            { label: 'Done!', onClick: () => goTo('myDemos'), active: true, inactive: false },
+            {
+              label: CONTENT.sessions[demoSession2Index].label,
+              onClick: () => app.selectTimeslot(1),
+              selectedRed: app.selectedTimeslot === 1,
+              inactive: false
+            },
+            {
+              label: 'Book!',
+              onClick: () => app.bookDemo(),
+              active: app.selectedTimeslot !== null,
+              inactive: app.selectedTimeslot === null
+            },
+            {
+              label: '<',
+              isBackBtn: true,
+              onClick: () => goTo('program'),
+              inactive: false
+            },
+            {
+              isLogo: true,
+              onClick: () => goTo('home')
+            }
+          );
+          break;
+              
+      /*  case 'demo':
+          const demoInfo = CONTENT.demoDetail[app.selectedDemoIndex];
+          const demoSession1Index = demoInfo.sessionIndices[0];
+          const demoSession2Index = demoInfo.sessionIndices[1];
+          buttons.push(
+            { label: demoInfo.location, onClick: () => {}, inactive: true },
+            { label: demoInfo.presenter, onClick: () => {}, inactive: true },
+            { label: demoInfo.duration, onClick: () => {}, inactive: true },
+            { label: CONTENT.sessions[demoSession1Index], onClick: () => app.selectTimeslot(0), selectedRed: app.selectedTimeslot === 0, inactive: false },
+            { label: CONTENT.sessions[demoSession2Index], onClick: () => app.selectTimeslot(1), selectedRed: app.selectedTimeslot === 1, inactive: false },
+            { label: 'Book!', onClick: () => app.bookDemo(), active: app.selectedTimeslot !== null, inactive: app.selectedTimeslot === null },
             { label: '<', isBackBtn: true, onClick: () => goTo('program'), inactive: false },
             { isLogo: true, onClick: () => goTo('home') }
           );
-          break;
-
+          break;*/
+              
+        case 'bookConfirm':
+            buttons.push(
+              { label: ':)', onClick: () => {}, inactive: true },
+              { label: ':)', onClick: () => {}, inactive: true },
+              { label: ':)', onClick: () => {}, inactive: true },
+            
+              { label: ':)', onClick: () => {}, inactive: true },
+            
+              {
+                label: '📅 Outlook',
+                onClick: () => addToOutlook(
+                  CONTENT.demoDetail[
+                    app.lastBooking.demoIndex
+                  ].name,
+                  CONTENT.sessions[
+                    app.lastBooking.timeslotIndex
+                  ].start
+                ),
+                active: true,
+                inactive: false
+              },
+            
+              {
+                label: 'Done!',
+                onClick: () => goTo('myDemos'),
+                active: true,
+                inactive: false
+              },
+            
+              {
+                label: '<',
+                isBackBtn: true,
+                onClick: () => goTo('program'),
+                inactive: false
+              },
+            
+              {
+                isLogo: true,
+                onClick: () => goTo('home')
+              }
+            );
+            break;
+              
         case 'quiz':
           buttons.push(
             { label: 'Q1', onClick: () => goTo('question', 0), inactive: false },
@@ -597,20 +1084,34 @@
             { isLogo: true, onClick: () => goTo('home') }
           );
           break;
-
         case 'question':
           buttons.push(
             { label: `${app.currentQuestion + 1}/6`, onClick: () => {}, inactive: true },
             { label: ':)', onClick: () => {}, inactive: true },
             { label: 'Next!', onClick: () => app.nextQuestion(), active: app.selectedAnswer !== null, inactive: app.selectedAnswer === null },
-            { label: 'Answer1', onClick: () => app.selectAnswer(0), active: app.selectedAnswer === 0, inactive: false },
-            { label: 'Answer2', onClick: () => app.selectAnswer(1), active: app.selectedAnswer === 1, inactive: false },
-            { label: 'Answer3', onClick: () => app.selectAnswer(2), active: app.selectedAnswer === 2, inactive: false },
+            {
+              label: 'Réponse A',
+              onClick: () => app.selectAnswer(0),
+              active: app.selectedAnswer === 0,
+              inactive: false
+            },
+            {
+              label: 'Réponse B',
+              onClick: () => app.selectAnswer(1),
+              active: app.selectedAnswer === 1,
+              inactive: false
+            },
+            {
+              label: 'Réponse C',
+              onClick: () => app.selectAnswer(2),
+              active: app.selectedAnswer === 2,
+              inactive: false
+            },
             { label: '<', isBackBtn: true, onClick: () => goTo('quiz'), inactive: false },
             { isLogo: true, onClick: () => goTo('home') }
           );
-          break;
 
+          break;
         case 'myDemos':
           buttons.push(
             { label: getDemoBookingInfo(0), onClick: () => {}, inactive: true },
@@ -623,7 +1124,6 @@
             { isLogo: true, onClick: () => goTo('home') }
           );
           break;
-
         case 'myQuiz':
           buttons.push(
             { label: getQuizAnswerInfo(0), onClick: () => {}, inactive: true },
@@ -636,20 +1136,59 @@
             { isLogo: true, onClick: () => goTo('home') }
           );
           break;
-
         case 'rating':
           buttons.push(
-            { label: '♥️', onClick: () => app.toggleHeart(0), heartSelected: app.ratingHearts.includes(0), inactive: false },
-            { label: '♥️', onClick: () => app.toggleHeart(1), heartSelected: app.ratingHearts.includes(1), inactive: false },
-            { label: '♥️', onClick: () => app.toggleHeart(2), heartSelected: app.ratingHearts.includes(2), inactive: false },
-            { label: '♥️', onClick: () => app.toggleHeart(3), heartSelected: app.ratingHearts.includes(3), inactive: false },
-            { label: '♥️', onClick: () => app.toggleHeart(4), heartSelected: app.ratingHearts.includes(4), inactive: false },
-            { label: '♥️', onClick: () => app.toggleHeart(5), heartSelected: app.ratingHearts.includes(5), inactive: false },
-            { label: ':)', isBackBtn: true, onClick: () => {}, inactive: true },
+            { 
+              label: app.ratingHearts.includes(0) ? '♥️' : '🩶', 
+              onClick: () => app.toggleHeart(0), 
+              heartSelected: app.ratingHearts.includes(0), 
+              heartUnselected: !app.ratingHearts.includes(0),
+              inactive: false 
+            },
+
+            { 
+              label: app.ratingHearts.includes(1) ? '♥️' : '🩶', 
+              onClick: () => app.toggleHeart(1), 
+              heartSelected: app.ratingHearts.includes(1), 
+              heartUnselected: !app.ratingHearts.includes(1),
+              inactive: false 
+            },
+            { 
+              label: app.ratingHearts.includes(2) ? '♥️' : '🩶', 
+              onClick: () => app.toggleHeart(2), 
+              heartSelected: app.ratingHearts.includes(2), 
+              heartUnselected: !app.ratingHearts.includes(2),
+              inactive: false 
+            },
+
+            { 
+              label: app.ratingHearts.includes(3) ? '♥️' : '🩶', 
+              onClick: () => app.toggleHeart(3), 
+              heartSelected: app.ratingHearts.includes(3), 
+              heartUnselected: !app.ratingHearts.includes(3),
+              inactive: false 
+            },
+
+            { 
+              label: app.ratingHearts.includes(4) ? '♥️' : '🩶', 
+              onClick: () => app.toggleHeart(4), 
+              heartSelected: app.ratingHearts.includes(4), 
+              heartUnselected: !app.ratingHearts.includes(4),
+              inactive: false 
+            },
+
+            { 
+              label: app.ratingHearts.includes(5) ? '♥️' : '🩶', 
+              onClick: () => app.toggleHeart(5), 
+              heartSelected: app.ratingHearts.includes(5), 
+              heartUnselected: !app.ratingHearts.includes(5),
+              inactive: false 
+            },
+            { label: 'SeeYou!', isCloseBtn: true, onClick: () => app.closeApp(), inactive: false },
             { isLogo: true, onClick: () => goTo('home') }
+
           );
           break;
-
         default:
           buttons.push(
             { label: '', onClick: () => {}, inactive: true },
@@ -662,74 +1201,69 @@
             { isLogo: true, onClick: () => goTo('home') }
           );
       }
-
       return buttons;
     }
-
-    app.validateAndLogin = async function() {
+    app.validateAndLogin = function() {
       const emailInput = document.getElementById('emailInput');
       const email = emailInput?.value.trim() || '';
-      
       if (!email) {
         app.emailError = 'Please enter an email address';
         render();
         return;
       }
-      
       if (!validateEmail(email)) {
         app.emailError = 'Please enter a valid email (format: name@domain.com)';
         render();
         return;
       }
-      
       app.email = email;
-      await saveParticipant();
       localStorage.setItem('userEmail', email);
       goTo('home');
     };
+////////////////////////////////////////////////////////////////////////////////////////////////
+  app.bookDemo = async function() {
 
-    app.bookDemo = async function() {
+  if (
+    app.selectedTimeslot !== null &&
+    app.selectedDemoIndex !== null
+  ) {
 
-      if (
-        app.selectedTimeslot !== null &&
-        app.selectedDemoIndex !== null
-      ) {
-
-        const booking = {
-          demoIndex: app.selectedDemoIndex,
-          timeslotIndex: app.selectedTimeslot
-        };
-
-        app.bookings.push(booking);
-
-        const { data, error } = await supabaseClient
-          .from('bookings')
-          .insert({
-            email: app.email,
-            demo_index: app.selectedDemoIndex,
-            timeslot_index: app.selectedTimeslot
-          })
-          .select();
-
-        console.log("BOOKING DATA =", data);
-        console.log("BOOKING ERROR =", error);
-
-        await saveParticipant();
-        localStorage.setItem(
-          'bookings',
-          JSON.stringify(app.bookings)
-        );
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        app.lastBooking = {
-          demoIndex: app.selectedDemoIndex,
-          timeslotIndex: app.selectedTimeslot
-        };
-////////////////////////////////////////////////////////////////////////////////////////////////////////////                
-        goTo('bookConfirm');
-      }
+    const booking = {
+      demoIndex: app.selectedDemoIndex,
+      timeslotIndex: app.selectedTimeslot
     };
 
+    app.bookings.push(booking);
 
+    const { data, error } = await supabaseClient
+      .from('bookings')
+      .insert({
+        email: app.email,
+        demo_index: app.selectedDemoIndex,
+        timeslot_index: app.selectedTimeslot
+      })
+      .select();
+
+    console.log("BOOKING DATA =", data);
+    console.log("BOOKING ERROR =", error);
+
+    await saveParticipant();
+
+    localStorage.setItem(
+      'bookings',
+      JSON.stringify(app.bookings)
+    );
+
+    app.lastBooking = {
+      demoIndex: app.selectedDemoIndex,
+      timeslotIndex: app.selectedTimeslot
+    };
+
+    goTo('bookConfirm');
+  }
+};
+ //////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
     app.selectTimeslot = function(index) {
       playClickSound();
       app.selectedTimeslot = app.selectedTimeslot === index ? null : index;
@@ -740,26 +1274,75 @@
       playClickSound();
       app.selectedAnswer = app.selectedAnswer === index ? null : index;
       render();
+
     };
 
-    app.toggleHeart = async function(index) {
+   app.toggleHeart = async function(index) {
+
       playClickSound();
+    
       if (app.ratingHearts.includes(index)) {
-        app.ratingHearts = app.ratingHearts.filter(i => i !== index);
+        app.ratingHearts =
+          app.ratingHearts.filter(i => i !== index);
       } else {
         app.ratingHearts.push(index);
       }
-      localStorage.setItem('ratingHearts', JSON.stringify(app.ratingHearts));
+    
+      localStorage.setItem(
+        'ratingHearts',
+        JSON.stringify(app.ratingHearts)
+      );
+    
       await saveParticipant();
+    
+      if (app.ratingHearts.length === 6) {
+        triggerHeartFirework();
+      }
+    
       render();
     };
+ 
 
-    app.nextQuestion = async function() {
+    function triggerHeartFirework() {
+      const container = document.getElementById('heartFireworkContainer');
+      container.innerHTML = '';
+      // Create multiple hearts that fly across screen
+      for (let i = 0; i < 50; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart-firework'
+        heart.innerHTML = '♥️';
+        // Random starting position near center
+        const startX = window.innerWidth / 2 + (Math.random() - 0.5) * 100;
+        const startY = window.innerHeight / 2 + (Math.random() - 0.5) * 100;
+        heart.style.left = startX + 'px';
+        heart.style.top = startY + 'px';
+        // Random direction for hearts to fly
+        const angle = (Math.random() * Math.PI * 2);
+        const velocity = 150 + Math.random() * 200;
+        const tx = Math.cos(angle) * velocity;
+        const ty = Math.sin(angle) * velocity;
+        heart.style.setProperty('--tx', tx + 'px');
+        heart.style.setProperty('--ty', ty + 'px');
+        // Random delay for staggered animation
+        heart.style.animationDelay = (Math.random() * 0.3) + 's';
+        container.appendChild(heart);
+        // Add animate class to trigger animation
+        setTimeout(() => {
+          heart.classList.add('animate');
+        }, 10);
+      }
+      // Clear container after animation
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 3000);
+    }
+   app.nextQuestion = async function() {
       if (app.selectedAnswer !== null) {
         app.quizAnswers[app.currentQuestion] = app.selectedAnswer;
+        ///////////////////////////////////////////////////////////////////////////////////
         await saveParticipant();
+        /////////////////////////////////////////////////////////////////////////////////////
         localStorage.setItem('quizAnswers', JSON.stringify(app.quizAnswers));
-
         if (app.currentQuestion < 5) {
           goTo('question', app.currentQuestion + 1);
         } else {
@@ -767,8 +1350,9 @@
         }
       }
     };
+        /////////////////////////////////////////////////////////////////////////////////////
 
-async function saveParticipant() {
+    async function saveParticipant() {
 
     if (!app.email) return;
 
@@ -793,8 +1377,10 @@ async function saveParticipant() {
     }
 }
 
+        /////////////////////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////////////////////////ajout de la fonction pour envoyer le fichier ICS
+
+     ///////////////////////////////////////////////////////////////////////ajout de la fonction pour envoyer le fichier ICS
     function addToOutlook(demoName, startDate) {
 
       const start = new Date(startDate);
@@ -811,7 +1397,7 @@ async function saveParticipant() {
       window.open(link, "_blank");
     }
     ///////////////////////////////////////////////////////////////////// Jusque la 
-    
+
     function render() {
       if (app.email === '' && app.currentPage !== 'email') {
         app.currentPage = 'email';
@@ -819,7 +1405,6 @@ async function saveParticipant() {
 
       const contentText = document.getElementById('contentText');
       let html = '';
-
       switch(app.currentPage) {
         case 'email':
           html = renderEmailPage();
@@ -852,17 +1437,104 @@ async function saveParticipant() {
           html = renderRatingPage();
           break;
       }
-
+      document.body.classList.toggle(
+       'email-page',
+        app.currentPage === 'email'
+      );
       contentText.innerHTML = html;
       renderKeyboard();
     }
+   
+ 
+    // Fullscreen functionality for mobile
+    function enterFullscreen() {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(err => {
+          console.log('Fullscreen request failed:', err);
+        });
+      }
+    }
+
+    function exitFullscreen() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(err => {
+          console.log('Exit fullscreen failed:', err);
+        });
+      }
+    }
+
+    function updateViewportHeight() {
+        const vv = window.visualViewport;
+        const height = vv ? vv.height : window.innerHeight;
+    
+        document.documentElement.style.setProperty(
+            '--app-height',
+            `${height}px`
+        );
+    }
+    
+    updateViewportHeight();
+
+    window.addEventListener('resize', updateViewportHeight);
+    window.addEventListener('orientationchange', updateViewportHeight);
+    window.visualViewport?.addEventListener('resize', updateViewportHeight);
+    window.addEventListener('pageshow', updateViewportHeight);
+    
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            updateViewportHeight();
+        }
+    });
+
+
+
+    
+    app.showGoodbye = function() {
+      const goodbyeScreen = document.getElementById('goodbyeScreen');
+      goodbyeScreen.style.display = 'flex';
+      setTimeout(() => {
+        // ✅ EXIT FULLSCREEN when quitting app
+        exitFullscreen();
+        // Close app after 3 seconds
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      }, 2000);
+    };
+
+    app.closeApp = function() {
+      // ✅ EXIT FULLSCREEN when closing app
+      exitFullscreen();
+
+      // Show goodbye screen first
+      const goodbyeScreen = document.getElementById('goodbyeScreen');
+      goodbyeScreen.style.display = 'flex';
+
+      // Reload after goodbye message
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    };
 
     if (app.email) {
       app.currentPage = 'home';
     } else {
       app.currentPage = 'email';
     }
+    
+    // Premier rendu
     render();
-  </script>
+    
+    // Premier calcul du viewport
+    updateViewportHeight();
+    
+    // Recalcul après le premier layout
+    requestAnimationFrame(() => {
+      updateViewportHeight();
+    });
+
+</script>
+
 </body>
 </html>
